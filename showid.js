@@ -1,4 +1,6 @@
-function showId(elm, id, url) {
+function showId(elm, jsonData, url) {
+  var id = jsonData["user"]["id"];
+
   var link = document.createElement("a");
   link.setAttribute("href", url);
   link.setAttribute("target", "_blank");
@@ -16,7 +18,7 @@ chrome.runtime.onMessage.addListener(
     var timerId = setInterval(function() {
       var n = document.querySelector("section._o6mpc");
       if (n != null) {
-        showId(n, request.id, request.url);
+        showId(n, request.jsonData, request.url);
         clearInterval(timerId);
       }
     }, 500);

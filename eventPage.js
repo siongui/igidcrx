@@ -1,15 +1,15 @@
 var reUrlUser = /^https:\/\/www\.instagram\.com\/([a-z0-9_.]+)\/$/;
 
-function sendMsg(id, url) {
+function sendMsg(jsonData, url) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     chrome.tabs.sendMessage(
       tabs[0].id,
-      {id: id, url: url}
+      {jsonData: jsonData, url: url}
     );
   });
 }
 
-function getId(url) {
+function getUserJsonData(url) {
   var jsonUrl = url + "?__a=1";
   var xhr = new XMLHttpRequest();
   xhr.open("GET", jsonUrl, true);
@@ -17,7 +17,7 @@ function getId(url) {
     if (xhr.readyState == 4) {
       // JSON.parse does not evaluate the attacker's scripts.
       var resp = JSON.parse(xhr.responseText);
-      sendMsg(resp["user"]["id"], jsonUrl);
+      sendMsg(resp, jsonUrl);
     }
   }
   xhr.send();
@@ -29,7 +29,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     // check if URL is user page
     var result = changeInfo.url.match(reUrlUser);
     if (result) {
-      getId(changeInfo.url);
+      getUserJsonData(changeInfo.url);
     }
   }
 });
