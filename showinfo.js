@@ -1,7 +1,11 @@
 function showMutualFollowers(elm, jsonData) {
+  if (jsonData["user"]["mutual_followers"] == null) {
+    return;
+  }
   var followers = jsonData["user"]["mutual_followers"]["usernames"];
+  var count = jsonData["user"]["mutual_followers"]["additional_count"];
   if (followers.length == 0) {
-    return
+    return;
   }
 
   var div = document.createElement("div");
@@ -16,7 +20,12 @@ function showMutualFollowers(elm, jsonData) {
     flink.appendChild(document.createTextNode(follower));
     div.appendChild(flink);
     if (followers.length != 0) {
-      div.appendChild(document.createTextNode(",　"));
+      //div.appendChild(document.createTextNode(",　"));
+      div.appendChild(document.createTextNode(", "));
+    } else {
+      if (count > 0) {
+        div.appendChild(document.createTextNode(" + "+count+" more"));
+      }
     }
   }
   elm.appendChild(div);
@@ -32,7 +41,11 @@ function showId(elm, jsonData, url) {
   link.appendChild(document.createTextNode(id));
 
   elm.appendChild(document.createElement("br"));
-  elm.appendChild(link);
+  var div = document.createElement("div");
+  div.setAttribute("style", "display: inline;");
+  div.appendChild(document.createTextNode("ID: "));
+  div.appendChild(link);
+  elm.appendChild(div);
 }
 
 chrome.runtime.onMessage.addListener(
