@@ -15,7 +15,7 @@ function showMutualFollowers(elm, jsonData) {
     var follower = followers.pop();
     var flink = document.createElement("a");
     flink.setAttribute("href", "https://www.instagram.com/"+follower+"/");
-    flink.setAttribute("target", "_blank");
+    //flink.setAttribute("target", "_blank");
     flink.setAttribute("class", "_fd86t");
     flink.appendChild(document.createTextNode(follower));
     div.appendChild(flink);

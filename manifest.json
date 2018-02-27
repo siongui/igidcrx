@@ -5,6 +5,8 @@
   "description" : "Show Instagram Id on user page",
   "version": "0.1",
 
+  "incognito": "split",
+
   "background": {
       "scripts": ["eventPage.js"]
   },
