@@ -1,9 +1,9 @@
 function showMutualFollowers(elm, jsonData) {
-  if (jsonData["user"]["mutual_followers"] == null) {
+  if (jsonData["graphql"]["user"]["mutual_followers"] == null) {
     return;
   }
-  var followers = jsonData["user"]["mutual_followers"]["usernames"];
-  var count = jsonData["user"]["mutual_followers"]["additional_count"];
+  var followers = jsonData["graphql"]["user"]["mutual_followers"]["usernames"];
+  var count = jsonData["graphql"]["user"]["mutual_followers"]["additional_count"];
   if (followers.length == 0) {
     return;
   }
@@ -32,7 +32,7 @@ function showMutualFollowers(elm, jsonData) {
 }
 
 function showId(elm, jsonData, url) {
-  var id = jsonData["user"]["id"];
+  var id = jsonData["graphql"]["user"]["id"];
 
   var link = document.createElement("a");
   link.setAttribute("href", url);
