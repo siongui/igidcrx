@@ -15,6 +15,14 @@
 Try to get Instagram_ Id
 
 
+Tricks
+++++++
+
+- `download instagram profile picture - Google search <https://www.google.com/search?q=download+instagram+profile+picture>`_
+
+  * `How to download my Instagram profile picture - Quora <https://www.quora.com/How-can-I-download-my-Instagram-profile-picture>`_
+  * `How to view instagram profile picture in full-size? - Stack Overflow <https://stackoverflow.com/questions/48468144/how-to-view-instagram-profile-picture-in-full-size>`_
+
 UNLICENSE
 +++++++++
 
