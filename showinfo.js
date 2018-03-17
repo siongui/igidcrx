@@ -74,7 +74,7 @@ function addProfilePicDownloadLink(jsonData, url) {
   }
 
   var div = document.createElement("div");
-  div.setAttribute("style", "z-index: 55; height: 40px; width: 126px; position: absolute; right: 10px; top: 8px; display: inline-block;");
+  div.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; right: 10px; top: 8px; display: inline-block;");
 
   var picurl = getFullSizeProfilePicUrl(jsonData["graphql"]["user"]["profile_pic_url_hd"]);
   var username = jsonData["graphql"]["user"]["username"];
@@ -82,10 +82,41 @@ function addProfilePicDownloadLink(jsonData, url) {
   link.setAttribute("href", picurl);
   link.setAttribute("target", "_blank");
   link.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
-  //link.setAttribute("download", username);
-  //link.appendChild(document.createTextNode("D"));
+
+  // filename will not change to username
+  // because href is on the different domain
+  // https://stackoverflow.com/a/10049353
+  link.setAttribute("download", username);
+
   div.appendChild(link);
   div_b0acm.appendChild(div);
+}
+
+function addLocalLinks(jsonData, url) {
+  var div_b0acm = document.querySelector("div._b0acm");
+  if (div_b0acm == null) {
+    console.log("no profile pic?");
+    return;
+  }
+
+  var div1 = document.createElement("div");
+  div1.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; right: 10px; bottom: 8px; display: inline-block;");
+  var link1 = document.createElement("a");
+  link1.setAttribute("href", "http://localhost:8999/download/profile_pic/");
+  link1.setAttribute("target", "_blank");
+  link1.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
+  div1.appendChild(link1);
+
+  var div2 = document.createElement("div");
+  div2.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; left: 10px; bottom: 8px; display: inline-block;");
+  var link2 = document.createElement("a");
+  link2.setAttribute("href", "http://localhost:8999/download/all_posts/");
+  link2.setAttribute("target", "_blank");
+  link2.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
+  div2.appendChild(link2);
+
+  div_b0acm.appendChild(div1);
+  div_b0acm.appendChild(div2);
 }
 
 chrome.runtime.onMessage.addListener(
@@ -101,6 +132,7 @@ chrome.runtime.onMessage.addListener(
         //showMutualFollowers(n, request.jsonData);
 
         addProfilePicDownloadLink(request.jsonData, request.url);
+        addLocalLinks(request.jsonData, request.url);
 
         clearInterval(timerId);
       }
