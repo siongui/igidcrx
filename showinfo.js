@@ -39,6 +39,13 @@ function showId(elm, jsonData, url) {
     return;
   }
 
+  var span_l8ji8 = elm.querySelector("span._l8ji8");
+  if (span_l8ji8 == null) {
+    span_l8ji8 = document.createElement("span");
+    span_l8ji8.setAttribute("class", "_l8ji8");
+    elm.appendChild(span_l8ji8);
+  }
+
   var id = jsonData["graphql"]["user"]["id"];
 
   var link = document.createElement("a");
@@ -47,9 +54,9 @@ function showId(elm, jsonData, url) {
   link.setAttribute("class", "_q3gn4 _idofuser");
   link.appendChild(document.createTextNode(id));
 
-  elm.appendChild(document.createElement("br"));
-  elm.appendChild(document.createTextNode("ID: "))
-  elm.appendChild(link)
+  span_l8ji8.appendChild(document.createElement("br"));
+  span_l8ji8.appendChild(document.createTextNode("ID: "))
+  span_l8ji8.appendChild(link)
 }
 
 chrome.runtime.onMessage.addListener(
@@ -57,7 +64,7 @@ chrome.runtime.onMessage.addListener(
 
     // wait page to be loaded
     var timerId = setInterval(function() {
-      var n = document.querySelector("span._l8ji8");
+      var n = document.querySelector("div._tb97a");
       if (n != null) {
         showId(n, request.jsonData, request.url);
 
