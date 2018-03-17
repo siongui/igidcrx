@@ -1,3 +1,5 @@
+// This function is no longer needed.
+// already supported on official Instagram website
 function showMutualFollowers(elm, jsonData) {
   if (jsonData["graphql"]["user"]["mutual_followers"] == null) {
     return;
@@ -32,20 +34,22 @@ function showMutualFollowers(elm, jsonData) {
 }
 
 function showId(elm, jsonData, url) {
+  // chech if id already exist
+  if (elm.querySelector("a._idofuser") != null) {
+    return;
+  }
+
   var id = jsonData["graphql"]["user"]["id"];
 
   var link = document.createElement("a");
   link.setAttribute("href", url);
   link.setAttribute("target", "_blank");
-  link.setAttribute("class", "_fd86t");
+  link.setAttribute("class", "_q3gn4 _idofuser");
   link.appendChild(document.createTextNode(id));
 
   elm.appendChild(document.createElement("br"));
-  var div = document.createElement("div");
-  div.setAttribute("style", "display: inline;");
-  div.appendChild(document.createTextNode("ID: "));
-  div.appendChild(link);
-  elm.appendChild(div);
+  elm.appendChild(document.createTextNode("ID: "))
+  elm.appendChild(link)
 }
 
 chrome.runtime.onMessage.addListener(
@@ -53,10 +57,13 @@ chrome.runtime.onMessage.addListener(
 
     // wait page to be loaded
     var timerId = setInterval(function() {
-      var n = document.querySelector("section._o6mpc");
+      var n = document.querySelector("span._l8ji8");
       if (n != null) {
         showId(n, request.jsonData, request.url);
-        showMutualFollowers(n, request.jsonData);
+
+        // already supported on official Instagram website
+        //showMutualFollowers(n, request.jsonData);
+
         clearInterval(timerId);
       }
     }, 500);
