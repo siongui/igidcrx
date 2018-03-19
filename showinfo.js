@@ -107,10 +107,12 @@ function addLocalLinks(jsonData, url) {
     return;
   }
 
+  var username = jsonData["graphql"]["user"]["username"];
+
   var div1 = document.createElement("div");
   div1.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; right: 10px; bottom: 8px; display: inline-block;");
   var link1 = document.createElement("a");
-  link1.setAttribute("href", "http://localhost:8999/download/profile_pic/");
+  link1.setAttribute("href", "http://localhost:8999/download/"+username+"/profile_pic/");
   link1.setAttribute("target", "_blank");
   link1.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
   div1.appendChild(link1);
@@ -118,7 +120,7 @@ function addLocalLinks(jsonData, url) {
   var div2 = document.createElement("div");
   div2.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; left: 10px; bottom: 8px; display: inline-block;");
   var link2 = document.createElement("a");
-  link2.setAttribute("href", "http://localhost:8999/download/all_posts/");
+  link2.setAttribute("href", "http://localhost:8999/download/"+username+"/all_posts/");
   link2.setAttribute("target", "_blank");
   link2.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
   div2.appendChild(link2);
