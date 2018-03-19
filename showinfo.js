@@ -83,6 +83,14 @@ function addProfilePicDownloadLink(jsonData, url) {
   link.setAttribute("target", "_blank");
   link.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
 
+  // show on hover
+  link.addEventListener("mouseenter", function(e) {
+    e.target.style.background = "#999";
+  });
+  link.addEventListener("mouseleave", function(e) {
+    e.target.style.background = "";
+  });
+
   // filename will not change to username
   // because href is on the different domain
   // https://stackoverflow.com/a/10049353
