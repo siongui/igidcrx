@@ -1,39 +1,4 @@
-// This function is no longer needed.
-// already supported on official Instagram website
-function showMutualFollowers(elm, jsonData) {
-  if (jsonData["graphql"]["user"]["mutual_followers"] == null) {
-    return;
-  }
-  var followers = jsonData["graphql"]["user"]["mutual_followers"]["usernames"];
-  var count = jsonData["graphql"]["user"]["mutual_followers"]["additional_count"];
-  if (followers.length == 0) {
-    return;
-  }
-
-  var div = document.createElement("div");
-  div.setAttribute("style", "display: inline;");
-  div.appendChild(document.createTextNode("Followed by: "));
-  while (followers.length > 0) {
-    var follower = followers.pop();
-    var flink = document.createElement("a");
-    flink.setAttribute("href", "https://www.instagram.com/"+follower+"/");
-    //flink.setAttribute("target", "_blank");
-    flink.setAttribute("class", "_fd86t");
-    flink.appendChild(document.createTextNode(follower));
-    div.appendChild(flink);
-    if (followers.length != 0) {
-      //div.appendChild(document.createTextNode(",　"));
-      div.appendChild(document.createTextNode(", "));
-    } else {
-      if (count > 0) {
-        div.appendChild(document.createTextNode(" + "+count+" more"));
-      }
-    }
-  }
-  elm.appendChild(div);
-}
-
-function showId(elm, jsonData, url) {
+function showId(elm, user) {
   // chech if id already exist
   if (elm.querySelector("a._idofuser") != null) {
     return;
@@ -46,27 +11,19 @@ function showId(elm, jsonData, url) {
     elm.appendChild(span_l8ji8);
   }
 
-  var id = jsonData["graphql"]["user"]["id"];
+  var id = user["id"];
 
   var link = document.createElement("a");
-  link.setAttribute("href", url);
   link.setAttribute("target", "_blank");
   link.setAttribute("class", "_q3gn4 _idofuser");
   link.appendChild(document.createTextNode(id));
 
   span_l8ji8.appendChild(document.createElement("br"));
-  span_l8ji8.appendChild(document.createTextNode("ID: "))
-  span_l8ji8.appendChild(link)
+  span_l8ji8.appendChild(document.createTextNode("ID: "));
+  span_l8ji8.appendChild(link);
 }
 
-function getFullSizeProfilePicUrl(picurl) {
-  var fullsizeurl = picurl.replace("/vp/", "/");
-  fullsizeurl = fullsizeurl.replace("t51.2885-19", "t51.2885-15");
-  fullsizeurl = fullsizeurl.replace(/\/s\d+x\d+\//, "/sh0.08/e35/");
-  return fullsizeurl;
-}
-
-function addProfilePicDownloadLink(jsonData, url) {
+function addProfilePicDownloadLink(user) {
   var div_b0acm = document.querySelector("div._b0acm");
   if (div_b0acm == null) {
     console.log("no profile pic?");
@@ -76,8 +33,8 @@ function addProfilePicDownloadLink(jsonData, url) {
   var div = document.createElement("div");
   div.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; right: 10px; top: 8px; display: inline-block;");
 
-  var picurl = getFullSizeProfilePicUrl(jsonData["graphql"]["user"]["profile_pic_url_hd"]);
-  var username = jsonData["graphql"]["user"]["username"];
+  var picurl = user["profile_pic_url_hd"];
+  var username = user["username"];
   var link = document.createElement("a");
   link.setAttribute("href", picurl);
   link.setAttribute("target", "_blank");
@@ -100,51 +57,40 @@ function addProfilePicDownloadLink(jsonData, url) {
   div_b0acm.appendChild(div);
 }
 
-function addLocalLinks(jsonData, url) {
-  var div_b0acm = document.querySelector("div._b0acm");
-  if (div_b0acm == null) {
-    console.log("no profile pic?");
-    return;
+function findSharedData(elm) {
+  if (elm.nodeType == Node.ELEMENT_NODE || elm.nodeType == Node.DOCUMENT_NODE) {
+    for (var i=0; i < elm.childNodes.length; i++) {
+      // recursively call self
+      var result = findSharedData(elm.childNodes[i]);
+      if (result != null) {
+        return result;
+      }
+    }
   }
 
-  var username = jsonData["graphql"]["user"]["username"];
+  if (elm.nodeType == Node.TEXT_NODE) {
+    if (elm.nodeValue.startsWith("window._sharedData = ")) {
+      var jsonString = elm.nodeValue.replace("window._sharedData = ", "");
+      jsonString = jsonString.slice(0, -1);
+      return JSON.parse(jsonString);
+    }
+    return null;
+  }
 
-  var div1 = document.createElement("div");
-  div1.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; right: 10px; bottom: 8px; display: inline-block;");
-  var link1 = document.createElement("a");
-  link1.setAttribute("href", "http://localhost:8999/download/"+username+"/profile_pic/");
-  link1.setAttribute("target", "_blank");
-  link1.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
-  div1.appendChild(link1);
-
-  var div2 = document.createElement("div");
-  div2.setAttribute("style", "z-index: 55; height: 40px; width: 46px; position: absolute; left: 10px; bottom: 8px; display: inline-block;");
-  var link2 = document.createElement("a");
-  link2.setAttribute("href", "http://localhost:8999/download/"+username+"/all_posts/");
-  link2.setAttribute("target", "_blank");
-  link2.setAttribute("style", "height: 40px; width: 40px; display: inline-block;");
-  div2.appendChild(link2);
-
-  div_b0acm.appendChild(div1);
-  div_b0acm.appendChild(div2);
+  return null;
 }
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+var sdata = findSharedData(document);
+if (sdata != null && sdata["entry_data"].hasOwnProperty("ProfilePage")) {
+  var user = sdata["entry_data"]["ProfilePage"][0]["graphql"]["user"];
 
-    // wait page to be loaded
-    var timerId = setInterval(function() {
-      var n = document.querySelector("div._tb97a");
-      if (n != null) {
-        showId(n, request.jsonData, request.url);
-
-        // already supported on official Instagram website
-        //showMutualFollowers(n, request.jsonData);
-
-        addProfilePicDownloadLink(request.jsonData, request.url);
-        addLocalLinks(request.jsonData, request.url);
-
-        clearInterval(timerId);
-      }
-    }, 500);
-  });
+  // wait page to be loaded
+  var timerId = setInterval(function() {
+    var n = document.querySelector("div._tb97a");
+    if (n != null) {
+      clearInterval(timerId);
+      showId(n, user);
+      addProfilePicDownloadLink(user);
+    }
+  }, 500);
+}
