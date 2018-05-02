@@ -69,10 +69,8 @@ function findSharedData(elm) {
   }
 
   if (elm.nodeType == Node.TEXT_NODE) {
-    if (elm.nodeValue.startsWith("window._sharedData=")) {
-      var jsonString = elm.nodeValue.replace("window._sharedData=", "");
-      jsonString = jsonString.replace("window.__initialDataLoaded(window._sharedData);", "");
-      jsonString = jsonString.trim();
+    if (elm.nodeValue.startsWith("window._sharedData = ")) {
+      var jsonString = elm.nodeValue.replace("window._sharedData = ", "");
       jsonString = jsonString.slice(0, -1);
       return JSON.parse(jsonString);
     }
@@ -84,7 +82,7 @@ function findSharedData(elm) {
 
 var sdata = findSharedData(document);
 if (sdata != null && sdata["entry_data"].hasOwnProperty("ProfilePage")) {
-  var user = sdata["entry_data"]["ProfilePage"]["graphql"]["user"];
+  var user = sdata["entry_data"]["ProfilePage"][0]["graphql"]["user"];
 
   // wait page to be loaded
   var timerId = setInterval(function() {
